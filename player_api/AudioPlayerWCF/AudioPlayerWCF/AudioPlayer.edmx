@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище audioplayerModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Audio">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="Performer" Type="int" />
+          <Property Name="Path" Type="nvarchar" MaxLength="50" />
+          <Property Name="Duration" Type="int" />
+        </EntityType>
+        <EntityType Name="Performer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="AudiosCount" Type="int" />
+        </EntityType>
+        <Association Name="FK__Audio__Performer__4BAC3F29">
+          <End Role="Performer" Type="Self.Performer" Multiplicity="0..1" />
+          <End Role="Audio" Type="Self.Audio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Performer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Audio">
+              <PropertyRef Name="Performer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище audioplayerModelContainer">
+          <EntitySet Name="Audio" EntityType="Self.Audio" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Performer" EntityType="Self.Performer" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Audio__Performer__4BAC3F29" Association="Self.FK__Audio__Performer__4BAC3F29">
+            <End Role="Performer" EntitySet="Performer" />
+            <End Role="Audio" EntitySet="Audio" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="audioplayerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Audio">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Performer" Type="Int32" />
+          <Property Name="Path" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Duration" Type="Int32" />
+          <NavigationProperty Name="Performer1" Relationship="Self.FK__Audio__Performer__4BAC3F29" FromRole="Audio" ToRole="Performer" />
+        </EntityType>
+        <EntityType Name="Performer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AudiosCount" Type="Int32" />
+          <NavigationProperty Name="Audio" Relationship="Self.FK__Audio__Performer__4BAC3F29" FromRole="Performer" ToRole="Audio" />
+        </EntityType>
+        <Association Name="FK__Audio__Performer__4BAC3F29">
+          <End Role="Performer" Type="Self.Performer" Multiplicity="0..1" />
+          <End Role="Audio" Type="Self.Audio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Performer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Audio">
+              <PropertyRef Name="Performer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="audioplayerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Audio" EntityType="Self.Audio" />
+          <EntitySet Name="Performer" EntityType="Self.Performer" />
+          <AssociationSet Name="FK__Audio__Performer__4BAC3F29" Association="Self.FK__Audio__Performer__4BAC3F29">
+            <End Role="Performer" EntitySet="Performer" />
+            <End Role="Audio" EntitySet="Audio" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище audioplayerModelContainer" CdmEntityContainer="audioplayerEntities">
+          <EntitySetMapping Name="Audio">
+            <EntityTypeMapping TypeName="audioplayerModel.Audio">
+              <MappingFragment StoreEntitySet="Audio">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Performer" ColumnName="Performer" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Performer">
+            <EntityTypeMapping TypeName="audioplayerModel.Performer">
+              <MappingFragment StoreEntitySet="Performer">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AudiosCount" ColumnName="AudiosCount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
