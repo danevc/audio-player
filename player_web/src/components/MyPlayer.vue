@@ -14,8 +14,10 @@
       <div style="display: flex; justify-content: space-between; height: 70px">
         <div class="track_info" v-if="audioMetadata.Id != -1">
           <my-text class="track_title_info" v-text="audioMetadata.Title"></my-text>
-          <my-text class="performer" v-text="audioMetadata.Performer[0].Name"
-            :performer-id="`${audioMetadata.Performer[0].Id}`" @click="performerClickHandler"></my-text>
+          <div class="performers" v-for="artist in audioMetadata.Performer" :key="artist.Id">
+            <my-text class="performer" v-text="artist.Name"
+            :performer-id="`${artist.Id}`" @click="performerClickHandler"></my-text>
+          </div>
         </div>
         <div class="track_info" v-else></div>
         <div class="buttons-audio-control-container">
@@ -87,7 +89,6 @@ export default {
       this.setIsRepeat(!this.isRepeat);
     },
     playOrPauseHandler() {
-      console.log(this.isPlaying);
       if (!this.isPlaying) {
         this.playAudio(this.audioMetadata.Id);
       }
@@ -96,7 +97,7 @@ export default {
       }
     },
     changeTimeLine(event) {
-      var precent = ((event.pageX - 100) / document.querySelector('.timeline').offsetWidth * 100).toFixed(1);
+      var precent = ((event.pageX - 220) / document.querySelector('.timeline').offsetWidth * 100).toFixed(1);
 
       if (precent > 100)
         precent = 100
@@ -297,7 +298,6 @@ export default {
 
 .timeline:hover {
   cursor: pointer;
-  opacity: 0.8;
 }
 
 .control-buttons-container {

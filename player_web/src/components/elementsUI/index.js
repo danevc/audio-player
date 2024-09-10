@@ -3,8 +3,10 @@ import MyInput from "./MyInput"
 import MyDialog from "./MyDialog"
 import AudioElem from "./AudioElem"
 import MyText from "./MyText"
-import MyLoader from "./MyLoader"
+import ScreenLoader from "./ScreenLoader"
 import MySlider from "./MySlider"
+import SmallLoader from "./SmallLoader"
+import SearchBar from "./SearchBar"
 
 export default [
   MyButton,
@@ -12,6 +14,8 @@ export default [
   MyDialog,
   AudioElem,
   MyText,
-  MyLoader,
-  MySlider
+  ScreenLoader,
+  MySlider,
+  SmallLoader,
+  SearchBar
 ]

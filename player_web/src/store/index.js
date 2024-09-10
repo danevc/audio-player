@@ -1,36 +1,55 @@
 import { createStore } from 'vuex'
 import { playerModule } from './playerModule'
-import { homeviewModule } from './homeviewModule'
+import { playlistModule } from './playlistModule'
+import { searchModule } from './searchModule'
 import axios from "axios";
 
 
 export default createStore({
   state: () => ({
     baseURL: 'https://localhost:44325/',
-    isLoading: false
+    isLoading: true,
+    searchHint: []
   }),
   mutations: {
-    setIsLoading(state, isLoading) {
-      state.isLoading = isLoading;
+    setIsLoading(state, bool) {
+      state.isLoading = bool;
+    },
+    setSearchResult(state, res){
+      state.searchHint = [];
+      res.Audios.forEach(el => {
+        state.searchHint.push({
+          type: 'audiotype',
+          value: el
+        })
+      });
+      res.Performers.forEach(el => {
+        state.searchHint.push({
+          type: 'performertype',
+          value: el
+        })
+      });
+      state.searchHint.sort((a, b) => a.value > b.value ? 1 : -1);
     }
   },
   actions: {
-    async setMetadataAudio(context, id) {
+    async SearchHint(context, query) {
       try {
-        var url = context.state.baseURL + 'GetAudio';
+        var url = context.state.baseURL + 'SearchHint';
         const response = await axios.get(url, {
           params: {
-            id: id
+            query: query
           }
         });
-        context.commit('player/setAudioMetadata', response.data.Audio, { root: true });
+        context.commit('setSearchResult', response.data);
       } catch (error) {
         console.log(error);
       }
     }
   },
   modules: {
-    homeview: homeviewModule,
-    player: playerModule
+    playlist: playlistModule,
+    player: playerModule,
+    search: searchModule
   }
 })

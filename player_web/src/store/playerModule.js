@@ -1,4 +1,4 @@
-// var Discogs = require('disconnect').Client;
+import axios from "axios";
 
 export const playerModule = {
     state: () => ({
@@ -69,13 +69,18 @@ export const playerModule = {
             });
             state.audioHTML.preload = true;
         },
-        playAudio({ state, commit, dispatch, rootState }, id) {
+        async getAudio({ commit, rootState }, id){
+            var url = rootState.baseURL + 'GetAudio';
+            const response = await axios.get(url, {
+                params: {
+                    id:id
+                }
+            });
+            commit('setAudioMetadata', response.data.Audio);
+        },
+        playAudio({ state, commit, rootState, dispatch }, id) {
             try {
-                // var db = new Discogs().database();
-                // db.getRelease(176126, function (err, data) {
-                //     console.log(data);
-                // });
-                dispatch('setMetadataAudio', id, { root: true });
+                dispatch('getAudio', id);
                 state.audioHTML.src = rootState.baseURL + 'GetAudioFile?id=' + id;
                 state.audioHTML.currentTime = state.currentTime;
                 var playPromise = state.audioHTML.play();
@@ -100,13 +105,16 @@ export const playerModule = {
             }
         },
         playNext({ commit, state, rootState, dispatch }) {
-            var queue = rootState.homeview.audiosMetadata;
+            var queue = rootState.playlist.audiosMetadata;
             var indexNext = 0;
             if (state.isShuffle) {
-                indexNext = Math.floor(Math.random() * queue.length);
+                var rnd = Math.random();
+                indexNext = Math.floor(rnd * queue.length);
             }
             else {
                 indexNext = queue.findIndex(a => a.Id == state.audioMetadata.Id) + 1;
+                if(indexNext >= queue.length)
+                    indexNext = 0
             }
             commit('setCurrentTime', 0);
             commit('setLostPartTrack', 0);
@@ -116,8 +124,12 @@ export const playerModule = {
         playPrevious({ commit, state, rootState, dispatch }) {
             commit('setCurrentTime', 0);
             commit('setLostPartTrack', 0);
-            var queue = rootState.homeview.audiosMetadata;
+            var queue = rootState.playlist.audiosMetadata;
             var indexPrevious = queue.findIndex(a => a.Id == state.audioMetadata.Id) - 1;
+            if(indexPrevious < 0) {
+                indexPrevious = 0;
+            }
+
             var idPrevious = queue[indexPrevious].Id;
             dispatch('playAudio', idPrevious);
         }

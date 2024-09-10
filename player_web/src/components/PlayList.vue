@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 export default {
     props: {
         audiosMetadata: {
@@ -25,7 +26,8 @@ export default {
 }
 
 .play-list {
-    overflow-y: auto;
+    overflow-y: hidden;
+    overflow: overlay;
     width: 60%;
     height: 100%;
     margin-left: auto;

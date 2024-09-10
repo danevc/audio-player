@@ -4,8 +4,11 @@
             <div :class="this.isPlaying && this.audioMetadata.Id == audio.Id ? 'pause_btn' : 'play_btn'"></div>
             <div>
                 <my-text class="title">{{ audio.Title }}</my-text>
-                <my-text class="performer" :performer-id="`${audio.Performer[0].Id}`">{{ audio.Performer[0].Name
-                    }}</my-text>
+                <div class="performers">
+                    <my-text class="performer" v-for="artist in audio.Performer" :key="artist.Id"
+                        :performer-id="`${artist.Id}`">{{ artist.Name + ' ' }}
+                    </my-text>
+                </div>
             </div>
         </div>
         <my-text class="duration">
@@ -36,7 +39,7 @@ export default {
                 if (this.isPlaying && this.audioMetadata.Id == this.audio.Id) {
                     this.$store.dispatch('player/pauseAudio', id);
                 }
-                else{
+                else {
                     this.$store.commit('player/setCurrentTime', 0);
                     this.$store.dispatch('player/playAudio', id);
                 }
@@ -57,6 +60,10 @@ export default {
     font-family: "Trebuchet MS";
     font-weight: bold;
     margin-bottom: 5px;
+}
+
+.performers {
+    display: flex;
 }
 
 .performer {
@@ -90,7 +97,7 @@ export default {
     padding: 15px;
     margin-top: 15px;
     width: 100%;
-    min-width: 600px;
+    min-width: 300px;
     height: 55px;
     background-color: rgb(39, 37, 45);
     display: flex;

@@ -1,51 +1,49 @@
 <template>
   <div class="home_page">
     <play-list :audiosMetadata="audiosMetadata"></play-list>
-    <div ref="observer" class="observer"></div>
   </div>
-  
+  <div ref="observer" class="observer"></div>
 </template>
 
 <script>
 import PlayList from '@/components/PlayList';
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
     PlayList
   },
+  computed: {
+    ...mapState({
+      audiosMetadata: state => state.playlist.audiosMetadata
+    })
+  },
+  methods: {
+    ...mapActions({
+      fetchAudios: 'playlist/fetchAudios'
+    })
+  },
   mounted() {
-    this.fetchAudios();
+    this.$store.commit('setIsLoading', true);
     const options = {
       rootMagrgin: '0px',
       threshold: 1.0
     }
     const callback = (entries) => {
-      if(entries[0].isIntersecting){
+      if (entries[0].isIntersecting) {
         this.fetchAudios();
       }
     }
     const observer = new IntersectionObserver(callback, options);
     observer.observe(this.$refs.observer);
-  },
-  methods: {
-    ...mapMutations({
-      setAudiosMetadata: 'homeview/setAudiosMetadata'
-    }),
-    ...mapActions({
-      fetchAudios: 'homeview/fetchAudios'
-    })
-  },
-  computed: {
-    ...mapState({
-      audiosMetadata: state => state.homeview.audiosMetadata
-    })
-  },
+    setTimeout(() => this.$store.commit('setIsLoading', false), 1200);
+  }
 }
 </script>
 
 <style>
-.observer{
-  height: 10px;
+.observer {
+  display: flex;
+  justify-content: center;
 }
 </style>

@@ -1,13 +1,11 @@
 <template>
   <div class="navbar">
     <div @click="$router.push('/')">
-      <my-text class="title-header">musica</my-text>
-    </div>
-    <div @click="$router.push('/')">
-      <my-text class="performers-header">performers</my-text>
+      <my-text class="title-header">daire</my-text>
     </div>
     <div class="search">
-      <my-input :placeholder="'Поиск'" v-model="searchValue"></my-input>
+      <my-input :placeholder="'Поиск'" v-model="searchValue" @keyup.enter="enterHandler"></my-input>
+      <search-bar ref="searchBar" v-show="isVisibleSearchBar" @setQuery="search"></search-bar>
     </div>
   </div>
 </template>
@@ -16,16 +14,38 @@
 export default {
   data() {
     return {
-      searchValue: ''
+      searchValue: '',
+      isSearchFocus: false,
+      isVisibleSearchBar: false
     }
   },
   methods: {
-
+    search(query) {
+      this.isVisibleSearchBar = false;
+      this.searchValue = query;
+      this.$router.push({ name: 'search', params: { query: query } });
+    },
+    enterHandler() {
+      this.search(this.searchValue);
+    }
   },
   watch: {
     searchValue(value) {
-      console.log(value);
+      if (value) {
+        this.isVisibleSearchBar = true;
+        this.$store.dispatch('SearchHint', value);
+      }
     }
+  },
+  mounted() {
+    document.addEventListener('click', (e) => {
+      if(this.isVisibleSearchBar){
+        const withinBoundaries = e.composedPath().includes(this.$refs.searchBar);
+        if (!withinBoundaries) {
+          this.isVisibleSearchBar = false; 
+        }
+      }
+    })
   }
 }
 </script>
@@ -33,10 +53,10 @@ export default {
 <style>
 .title-header {
   font-size: 1.3em;
-  margin:20px;
+  margin: 20px;
 }
 
-.performers-header{
+.performers-header {
   font-size: 1.2em;
 }
 
@@ -54,10 +74,15 @@ export default {
 }
 
 .search {
-  width: 30%;
-  position: relative;
+  position: absolute;
+  top: 0;
   margin-left: auto;
   margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  width: 30%;
+  min-width: 300px;
   margin-bottom: 10px;
 }
 </style>
