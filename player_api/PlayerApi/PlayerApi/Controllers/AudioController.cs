@@ -6,67 +6,82 @@ using System.Collections.Generic;
 using PlayerApi.Models;
 using System.IO;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
+using NLog;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using PlayerApi.SqlHelper;
 
 namespace PlayerApi.Controllers
 {
     [ApiController]
     public class AudioController : Controller
     {
+        private static readonly string _basePath = "D:\\Danil\\Music\\";
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true,
+            IgnoreNullValues = true,
+            MaxDepth = 10
+        };
+
         [HttpGet]
         [Route("")]
         public IActionResult Action()
         {
-            return Json("Server Audio started");
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("AddAudios")]
+        public async Task<IActionResult> AddAudios(List<IFormFile> files)
+        {
+            foreach (var file in files)
+            {
+                string path = string.Format(@"{0}__Files__\\{1}.mp3", _basePath, DateTime.Now.Ticks);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+                Add.Audio(path);
+            }
+            return Ok();
         }
 
         [HttpGet]
         [Route("GetAudiosPart")]
-        public IActionResult GetAudiosPart(int page = 0, int limit = 10)
+        public IActionResult GetAudiosPart(int page = 0, int limit = 10, string query = "")
         {
             using (var db = new AudioPlayerContext())
             {
-                var audio = db.Audio.OrderBy(c => c.Duration).Skip(limit * page).Take(limit).Include(a => a.Performer).ToList();
                 var audios = new List<Audio>();
-                List<Performer> performers;
-                foreach (var a in audio)
+                int quantityAudios;
+                if(query == "")
                 {
-                    performers = new List<Performer>();
-                    foreach (var p in a.Performer)
-                    {
-                        performers.Add(new Performer
-                        {
-                            Id = p.Id,
-                            Name = p.Name,
-                            Audio = null
-                        });
-                    }
-                    audios.Add(new Audio
-                    {
-                        Id = a.Id,
-                        Title = a.Title,
-                        Path = a.Path,
-                        Duration = a.Duration,
-                        Performer = performers
-                    });
-                    
+                    audios = db.Audio.OrderByDescending(a => a.CreationDate).Skip(limit * page).Take(limit).Include(a => a.Performer)
+                        .ToList();
+                    quantityAudios = db.Audio.Count();
                 }
+                else
+                {
+                    audios = SQLSelector.SearchAudios(query, page, limit);
+                    if (!audios.Any())
+                    {
+                        var queryInvert = Utils.EngToRus(query);
+                        audios = SQLSelector.SearchAudios(queryInvert, page, limit);
+                    }
+                    quantityAudios = SQLSelector.SearchAudiosCount(query);
+                }
+                
                 var audioResponse = new AudioResponse
                 {
-                    Count = 2,
-                    Audios = audios,
+                    Count = quantityAudios,
+                    Audios = Utils.AudioListNormalize(audios),
                     Error = false
                 };
-                var jsonOptions = new System.Text.Json.JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    WriteIndented = true,
-                    IgnoreNullValues= true,
-                    MaxDepth = 10
-                };
                 
-                return Json(audioResponse, jsonOptions);
+                return Json(audioResponse, _jsonOptions);
             }
         }
 
@@ -114,11 +129,12 @@ namespace PlayerApi.Controllers
             using (var db = new AudioPlayerContext())
             {
                 var audio = db.Audio.FirstOrDefault(e => e.Id == id);
-                //var fs = new FileStream(audio.Path, FileMode.Open);
-                //return File(mas, "audio/mpeg");
-                using var fs = new FileStream(audio.Path, FileMode.Open, FileAccess.Read);
+                audio.AmountAuditions++;
+                db.SaveChanges();
+                var path = _basePath + audio.Path;
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                 using var br = new BinaryReader(fs);
-                long numBytes = new FileInfo(audio.Path).Length;
+                long numBytes = new FileInfo(path).Length;
                 var buff = br.ReadBytes((int)numBytes);
                 var fileResult = File(buff, "audio/mpeg");
                 fileResult.EnableRangeProcessing = true;
@@ -127,99 +143,23 @@ namespace PlayerApi.Controllers
         }
 
         [HttpGet]
-        [Route("GetPerformersPart")]
-        public IActionResult GetPerformersPart(int page = 0, int limit = 10)
+        [Route("SearchHint")]
+        public IActionResult SearchHint(string query)
         {
             using (var db = new AudioPlayerContext())
             {
-                var perf = new Performer
+                var take = 8;
+                var audios = db.Audio.Where(a => EF.Functions.Like(a.Title, $"{query}%")).OrderBy(a => a.Title).Select(a => a.Title).Distinct().Take(take).ToList();
+                var performers = db.Performer.Where(a => EF.Functions.Like(a.Name, $"{query}%")).OrderBy(a => a.Name).Select(a => a.Name).Distinct().Take(take).ToList();
+
+                var hintResponse = new SearchHintResponse()
                 {
-                    Name = "Miley"
+                    Audios = audios,
+                    Performers = performers
                 };
-
-                var performer = db.Performer.OrderBy(c => c.Name).Skip(limit * page).Take(limit).Include(a => a.Audio).ToList();
-                var performers = new List<Performer>();
-                List<Audio> audios;
-                foreach (var p in performer)
-                {
-                    audios = new List<Audio>();
-                    foreach (var a in p.Audio)
-                    {
-                        audios.Add(new Audio
-                        {
-                            Id = a.Id,
-                            Title = a.Title,
-                            Path = a.Path,
-                            Duration = a.Duration
-                        });
-                    }
-                    performers.Add(new Performer
-                    {
-                        Id = p.Id,
-                        Name = p.Name,
-                        Audio = audios
-                    });
-
-                }
-                var performersResponse = new PerformerResponse
-                {
-                    Count = 2,
-                    Performers = performers,
-                    Error = false
-                };
-                var jsonOptions = new System.Text.Json.JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    WriteIndented = true,
-                    IgnoreNullValues = true,
-                    MaxDepth = 10
-                };
-
-                return Json(performersResponse, jsonOptions);
-            }
-        }
-
-        [HttpGet]
-        [Route("v")]
-        public IActionResult FirstWriteBase()
-        {
-            using (var db = new AudioPlayerContext())
-            {
-                var directoriesList = new List<string>();
-                var filesList = new List<string>();
-                string dirName = "D:\\Danil\\Music";
-                string[] dirs = Directory.GetDirectories(dirName);
-                foreach (string s in dirs)
-                {
-                    var dirInfo = new DirectoryInfo(s);
-
-                    if (dirInfo.Name[0] != '_')
-                    {
-
-                        var perf = new Performer { Name = dirInfo.Name };
-                        db.Performer.Add(perf);
-
-                        string[] files = Directory.GetFiles(s);
-
-                        foreach (var f in files)
-                        {
-                            var audioInfo = TagLib.File.Create(f);
-                            var audio = new Audio
-                            {
-                                Title = audioInfo.Tag.Title,
-                                Path = f,
-                                Duration = Convert.ToInt32(Math.Round(audioInfo.Properties.Duration.TotalSeconds))
-                            };
-
-                            perf.Audio.Add(audio);
-                        }
-                        //db.SaveChanges();
-                    }
-                }
                 
-                return Json(directoriesList);
+                return Json(hintResponse, _jsonOptions);
             }
         }
-
     }
 }
