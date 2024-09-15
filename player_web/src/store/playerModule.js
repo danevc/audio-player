@@ -12,6 +12,7 @@ export const playerModule = {
             Duration: 0,
             Path: ''
         },
+        queuePlayback: {},
         audioHTML: new Audio(),
         currentTime: 0,
         volume: 15,
@@ -28,6 +29,9 @@ export const playerModule = {
     mutations: {
         setIsPlaying(state, bool) {
             state.isPlaying = bool;
+        },
+        setQueuePlayback(state, audios) {
+            state.queuePlayback.audios = audios;
         },
         setIsShuffle(state, bool) {
             state.isShuffle = bool;
@@ -69,11 +73,11 @@ export const playerModule = {
             });
             state.audioHTML.preload = true;
         },
-        async getAudio({ commit, rootState }, id){
+        async getAudio({ commit, rootState }, id) {
             var url = rootState.baseURL + 'GetAudio';
             const response = await axios.get(url, {
                 params: {
-                    id:id
+                    id: id
                 }
             });
             commit('setAudioMetadata', response.data.Audio);
@@ -104,8 +108,8 @@ export const playerModule = {
                 console.log(error);
             }
         },
-        playNext({ commit, state, rootState, dispatch }) {
-            var queue = rootState.playlist.audiosMetadata;
+        playNext({ commit, state, dispatch }) {
+            var queue = state.queuePlayback.audios;
             var indexNext = 0;
             if (state.isShuffle) {
                 var rnd = Math.random();
@@ -113,7 +117,7 @@ export const playerModule = {
             }
             else {
                 indexNext = queue.findIndex(a => a.Id == state.audioMetadata.Id) + 1;
-                if(indexNext >= queue.length)
+                if (indexNext >= queue.length)
                     indexNext = 0
             }
             commit('setCurrentTime', 0);
@@ -124,9 +128,9 @@ export const playerModule = {
         playPrevious({ commit, state, rootState, dispatch }) {
             commit('setCurrentTime', 0);
             commit('setLostPartTrack', 0);
-            var queue = rootState.playlist.audiosMetadata;
+            var queue = state.queuePlayback.audios;
             var indexPrevious = queue.findIndex(a => a.Id == state.audioMetadata.Id) - 1;
-            if(indexPrevious < 0) {
+            if (indexPrevious < 0) {
                 indexPrevious = 0;
             }
 

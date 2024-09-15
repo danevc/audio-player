@@ -1,12 +1,12 @@
 <template>
     <div class="search-bar">
         <my-text @click="hintClickHandler" :hint="`${a.value}`" class="elem-search" :class="a.type"
-            v-for="a in this.$store.state.searchHint">{{ a.value
+            v-for="a in searchHint">{{ a.value
             }}
             <div v-if="a.type === 'audiotype'">
                 <img class="icon" src="@/icones/audiotype__white.png" alt="">
             </div>
-            <div  v-if="a.type === 'performertype'">
+            <div v-if="a.type === 'performertype'">
                 <img class="icon" src="@/icones/perftype__white.png" alt="">
             </div>
         </my-text>
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     name: 'search-bar',
     methods: {
@@ -22,6 +23,11 @@ export default {
             this.$emit('setQuery', query);
         }
 
+    },
+    computed: {
+        ...mapState({
+            searchHint: state => state.search.searchHint,
+        }),
     }
 }
 </script>

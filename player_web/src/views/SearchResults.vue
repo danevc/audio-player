@@ -8,7 +8,8 @@
             <my-text :class="this.currentCase == 'album' ? 'activecase case' : 'case'"
                 @click="this.currentCase = 'album'">Альбомы</my-text>
         </div>
-        <play-list v-if="this.currentCase == 'audio'" :audiosMetadata="audiosSearchResult"></play-list>
+        <play-list ref="playlistSearch" v-if="this.currentCase == 'audio'"
+            :audiosMetadata="audiosSearchResult"></play-list>
     </div>
     <div ref="observer" class="observer"></div>
 </template>
@@ -25,7 +26,8 @@ export default {
     },
     data() {
         return {
-            currentCase: 'audio'
+            currentCase: 'audio',
+            isFirstLoad: true
         }
     },
     components: {
@@ -38,27 +40,30 @@ export default {
     },
     methods: {
         ...mapActions({
-            loadAudiosSearchResult: 'search/loadAudiosSearchResult'
+            fetchAudiosSearchResult: 'search/fetchAudiosSearchResult'
         })
     },
     watch: {
         query(val) {
-            this.loadAudiosSearchResult(val);
+            this.fetchAudiosSearchResult(val);
         }
     },
     mounted() {
         this.$store.commit('setIsLoading', true);
-        const options = {
-            rootMagrgin: '0px',
-            threshold: 1.0
-        }
-        const callback = (entries) => {
-            if (entries[0].isIntersecting) {
-                this.loadAudiosSearchResult(this.query);
+        this.fetchAudiosSearchResult(this.query).then(() => {
+            const options = {
+                rootMagrgin: '0px',
+                threshold: 1.0
             }
-        }
-        const observer = new IntersectionObserver(callback, options);
-        observer.observe(this.$refs.observer);
+            const callback = (entries) => {
+                if (entries[0].isIntersecting && !this.isFirstLoad) {
+                    this.fetchAudiosSearchResult(this.query);
+                }
+                this.isFirstLoad = false;
+            }
+            const observer = new IntersectionObserver(callback, options);
+            observer.observe(this.$refs.observer);
+        });
         this.$store.commit('setIsLoading', false);
     }
 }

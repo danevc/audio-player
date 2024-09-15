@@ -24,7 +24,7 @@ export default {
     })
   },
   mounted() {
-    this.$store.commit('setIsLoading', true);
+    //this.$store.commit('setIsLoading', true);
     const options = {
       rootMagrgin: '0px',
       threshold: 1.0
@@ -36,7 +36,7 @@ export default {
     }
     const observer = new IntersectionObserver(callback, options);
     observer.observe(this.$refs.observer);
-    setTimeout(() => this.$store.commit('setIsLoading', false), 1200);
+    //setTimeout(() => this.$store.commit('setIsLoading', false), 1200);
   }
 }
 </script>

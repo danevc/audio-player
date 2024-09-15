@@ -8,41 +8,31 @@ import axios from "axios";
 export default createStore({
   state: () => ({
     baseURL: 'https://localhost:44325/',
-    isLoading: true,
-    searchHint: []
+    isLoading: false
   }),
   mutations: {
     setIsLoading(state, bool) {
       state.isLoading = bool;
-    },
-    setSearchResult(state, res){
-      state.searchHint = [];
-      res.Audios.forEach(el => {
-        state.searchHint.push({
-          type: 'audiotype',
-          value: el
-        })
-      });
-      res.Performers.forEach(el => {
-        state.searchHint.push({
-          type: 'performertype',
-          value: el
-        })
-      });
-      state.searchHint.sort((a, b) => a.value > b.value ? 1 : -1);
     }
   },
   actions: {
-    async SearchHint(context, query) {
+    async uploadFiles({ rootState }, files) {
       try {
-        var url = context.state.baseURL + 'SearchHint';
-        const response = await axios.get(url, {
-          params: {
-            query: query
+        var formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+          formData.append('files', files[i]);
+        }
+        var url = rootState.baseURL + 'AddAudios';
+        const response = await axios.post(url, formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
           }
-        });
-        context.commit('setSearchResult', response.data);
-      } catch (error) {
+        }
+      );
+        console.log(response);
+      }
+      catch (error) {
         console.log(error);
       }
     }

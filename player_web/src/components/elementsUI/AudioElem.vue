@@ -1,20 +1,23 @@
 <template>
-    <div class="audio-element" :audio-id="`${audio.Id}`" @click="audioClickHandler">
-        <div style="display: flex;">
-            <div :class="this.isPlaying && this.audioMetadata.Id == audio.Id ? 'pause_btn' : 'play_btn'"></div>
-            <div>
-                <my-text class="title">{{ audio.Title }}</my-text>
-                <div class="performers">
-                    <my-text class="performer" v-for="artist in audio.Performer" :key="artist.Id"
-                        :performer-id="`${artist.Id}`">{{ artist.Name + ' ' }}
-                    </my-text>
+    <transition name="slide">
+        <div class="audio-element" :audio-id="`${audio.Id}`" @click="audioClickHandler">
+            <div style="display: flex;">
+                <div :class="this.isPlaying && this.audioMetadata.Id == audio.Id ? 'pause_btn' : 'play_btn'"></div>
+                <div>
+                    <my-text class="title">{{ audio.Title }}</my-text>
+                    <div class="performers">
+                        <my-text class="performer" v-for="artist in audio.Performer" :key="artist.Id"
+                            :performer-id="`${artist.Id}`">
+                        </my-text>
+                        <my-text>{{ getArtistsString }}</my-text>
+                    </div>
                 </div>
             </div>
+            <my-text class="duration">
+                {{ this.secToMin(audio.Duration) }}
+            </my-text>
         </div>
-        <my-text class="duration">
-            {{ this.secToMin(audio.Duration) }}
-        </my-text>
-    </div>
+    </transition>
 </template>
 
 <script>
@@ -50,12 +53,39 @@ export default {
         ...mapState({
             isPlaying: state => state.player.isPlaying,
             audioMetadata: state => state.player.audioMetadata
-        })
+        }),
+        getArtistsString() {
+            var artistsString = '';
+            var qount = this.audio.Performer.length;
+            for (let i = 0; i < qount; i++) {
+                if (i == qount - 1) {
+                    artistsString += this.audio.Performer[i].Name;
+                }
+                else {
+                    artistsString += this.audio.Performer[i].Name + ', ';
+                }
+            }
+            return artistsString;
+        }
     },
 }
 </script>
 
 <style scoped>
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+
 .title {
     font-family: "Trebuchet MS";
     font-weight: bold;

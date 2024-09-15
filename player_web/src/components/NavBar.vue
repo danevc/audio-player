@@ -4,9 +4,18 @@
       <my-text class="title-header">daire</my-text>
     </div>
     <div class="search">
-      <my-input :placeholder="'Поиск'" v-model="searchValue" @keyup.enter="enterHandler"></my-input>
-      <search-bar ref="searchBar" v-show="isVisibleSearchBar" @setQuery="search"></search-bar>
+      <my-search></my-search>
     </div>
+    <div class="upload-audio-container">
+      <my-button @click="uploadFileHandler" style="padding: 5px;">
+        <my-text>
+          Загрузить аудио
+        </my-text>
+      </my-button>
+    </div>
+    <dialog-window v-model:show="isShowUploadFile">
+      <upload-file-form></upload-file-form>
+    </dialog-window>
   </div>
 </template>
 
@@ -14,50 +23,26 @@
 export default {
   data() {
     return {
-      searchValue: '',
-      isSearchFocus: false,
-      isVisibleSearchBar: false
+      isShowUploadFile: false
     }
   },
   methods: {
-    search(query) {
-      this.isVisibleSearchBar = false;
-      this.searchValue = query;
-      this.$router.push({ name: 'search', params: { query: query } });
-    },
-    enterHandler() {
-      this.search(this.searchValue);
+    uploadFileHandler() {
+      this.isShowUploadFile = true;
     }
-  },
-  watch: {
-    searchValue(value) {
-      if (value) {
-        this.isVisibleSearchBar = true;
-        this.$store.dispatch('SearchHint', value);
-      }
-    }
-  },
-  mounted() {
-    document.addEventListener('click', (e) => {
-      if(this.isVisibleSearchBar){
-        const withinBoundaries = e.composedPath().includes(this.$refs.searchBar);
-        if (!withinBoundaries) {
-          this.isVisibleSearchBar = false; 
-        }
-      }
-    })
   }
+  
 }
 </script>
 
 <style>
+.upload-audio-container {
+  margin-left: auto;
+}
+
 .title-header {
   font-size: 1.3em;
   margin: 20px;
-}
-
-.performers-header {
-  font-size: 1.2em;
 }
 
 .navbar {

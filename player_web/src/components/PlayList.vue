@@ -1,10 +1,11 @@
 <template>
-    <div class="play-list">
+    <div class="play-list" @click="playlistClickHandler">
         <audio-elem v-for="a in audiosMetadata" :key=a.Id :audio="a"></audio-elem>
     </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 
 export default {
     props: {
@@ -15,6 +16,16 @@ export default {
         playlistTitle: {
             type: String,
             required: false
+        }
+    },
+    methods:{
+        ...mapMutations({
+                setQueuePlayback: 'player/setQueuePlayback',
+            }),
+        playlistClickHandler(){
+            
+            console.log('setQueuePlayback');
+            this.setQueuePlayback(this.audiosMetadata);
         }
     }
 }
@@ -27,7 +38,6 @@ export default {
 
 .play-list {
     overflow-y: hidden;
-    overflow: overlay;
     width: 60%;
     height: 100%;
     margin-left: auto;

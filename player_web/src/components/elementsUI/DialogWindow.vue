@@ -8,7 +8,7 @@
 
 <script>
 export default{
-    name: 'my-dialog',
+    name: 'dialog-window',
     props:{
         show:{
             type: Boolean,
@@ -37,10 +37,10 @@ export default{
 
 .dialog___content {
   margin: auto;
-  background: white;
+  background: rgb(81, 78, 92);
   border-radius: 12px;
   min-height: 200px;
-  width: 600px;
+  width: 450px;
   padding: 20px;
 }
 </style>

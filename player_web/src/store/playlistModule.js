@@ -3,7 +3,6 @@ import axios from "axios";
 export const playlistModule = {
     state: () => ({
         audiosMetadata: [],
-        audiosIds: [],
         page: 0,
         limit: 15,
         totalCount: 0
@@ -38,6 +37,7 @@ export const playlistModule = {
                     commit('setTotalCount', response.data.Count);
                     commit('setAudiosMetadata', [...state.audiosMetadata, ...response.data.Audios]);
                     if(state.page == 0){
+                        commit('player/setQueuePlayback', state.audiosMetadata, { root:true });
                         commit('player/setAudioMetadata', response.data.Audios[0], {root:true});
                     }
                     commit('setPage', state.page + 1);

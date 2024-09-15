@@ -11,6 +11,7 @@ namespace PlayerApi
     {
         public DbSet<Audio> Audio { get; set; }
         public DbSet<Performer> Performer { get; set; }
+        public DbSet<Playlist> Playlist { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
