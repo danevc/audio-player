@@ -8,14 +8,14 @@
             <my-text :class="this.currentCase == 'album' ? 'activecase case' : 'case'"
                 @click="this.currentCase = 'album'">Альбомы</my-text>
         </div>
-        <play-list ref="playlistSearch" v-if="this.currentCase == 'audio'"
-            :audiosMetadata="audiosSearchResult"></play-list>
+        <audio-list v-if="this.currentCase == 'audio'"
+            :audiosMetadata="audiosSearchResult" class="audio-list"></audio-list>
     </div>
     <div ref="observer" class="observer"></div>
 </template>
 
 <script>
-import PlayList from '@/components/PlayList';
+import AudioList from '@/components/AudioList';
 import { mapState, mapActions } from 'vuex';
 
 export default {
@@ -31,7 +31,7 @@ export default {
         }
     },
     components: {
-        PlayList
+        AudioList
     },
     computed: {
         ...mapState({

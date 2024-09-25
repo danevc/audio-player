@@ -1,15 +1,14 @@
 <template>
     <transition name="slide">
-        <div class="audio-element" :audio-id="`${audio.Id}`" @click="audioClickHandler">
+        <div class="audio-element" @click="audioClickHandler">
             <div style="display: flex;">
                 <div :class="this.isPlaying && this.audioMetadata.Id == audio.Id ? 'pause_btn' : 'play_btn'"></div>
                 <div>
                     <my-text class="title">{{ audio.Title }}</my-text>
                     <div class="performers">
                         <my-text class="performer" v-for="artist in audio.Performer" :key="artist.Id"
-                            :performer-id="`${artist.Id}`">
+                            :performer-id="`${artist.Id}`">{{ artist.Name }}
                         </my-text>
-                        <my-text>{{ getArtistsString }}</my-text>
                     </div>
                 </div>
             </div>
@@ -38,13 +37,13 @@ export default {
             if (event.target.getAttribute("performer-id")) {
                 console.log("perff");
             } else {
-                var id = event.currentTarget.getAttribute("audio-id");
+                console.log(this.audio.Id);
                 if (this.isPlaying && this.audioMetadata.Id == this.audio.Id) {
-                    this.$store.dispatch('player/pauseAudio', id);
+                    this.$store.dispatch('player/pauseAudio', this.audio.Id);
                 }
                 else {
                     this.$store.commit('player/setCurrentTime', 0);
-                    this.$store.dispatch('player/playAudio', id);
+                    this.$store.dispatch('player/playAudio', this.audio.Id);
                 }
             }
         }
@@ -53,20 +52,7 @@ export default {
         ...mapState({
             isPlaying: state => state.player.isPlaying,
             audioMetadata: state => state.player.audioMetadata
-        }),
-        getArtistsString() {
-            var artistsString = '';
-            var qount = this.audio.Performer.length;
-            for (let i = 0; i < qount; i++) {
-                if (i == qount - 1) {
-                    artistsString += this.audio.Performer[i].Name;
-                }
-                else {
-                    artistsString += this.audio.Performer[i].Name + ', ';
-                }
-            }
-            return artistsString;
-        }
+        })
     },
 }
 </script>
@@ -94,6 +80,8 @@ export default {
 
 .performers {
     display: flex;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .performer {
@@ -105,6 +93,11 @@ export default {
 .performer:hover {
     cursor: pointer;
     color: rgb(226, 216, 216);
+}
+
+.performer:not(:last-child):after {
+  content: ', ';
+  margin-right: 6px;
 }
 
 .play_btn {

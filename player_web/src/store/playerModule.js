@@ -125,7 +125,7 @@ export const playerModule = {
             var idNext = queue[indexNext].Id;
             dispatch('playAudio', idNext);
         },
-        playPrevious({ commit, state, rootState, dispatch }) {
+        playPrevious({ commit, state, dispatch }) {
             commit('setCurrentTime', 0);
             commit('setLostPartTrack', 0);
             var queue = state.queuePlayback.audios;

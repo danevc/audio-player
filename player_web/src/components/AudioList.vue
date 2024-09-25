@@ -38,12 +38,7 @@ export default {
 
 .play-list {
     overflow-y: hidden;
-    width: 60%;
-    height: 100%;
-    margin-left: auto;
-    margin-right: auto;
     border-radius: 2px;
     background-color: rgb(39, 37, 45);
-    min-width: 600px;
 }
 </style>

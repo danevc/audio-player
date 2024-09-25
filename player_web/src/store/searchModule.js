@@ -47,8 +47,7 @@ export const searchModule = {
   actions: {
     async SearchHint(context, query) {
       try {
-        var url = context.rootState.baseURL + 'SearchHint';
-        const response = await axios.get(url, {
+        const response = await axios.get('SearchHint', {
           params: {
             query: query
           }
@@ -58,7 +57,7 @@ export const searchModule = {
         console.log(error);
       }
     },
-    async fetchAudiosSearchResult({ state, commit, rootState }, query) {
+    async fetchAudiosSearchResult({ state, commit }, query) {
       try {
         if (state.query != query) {
           commit('setSearchResult', []);
@@ -67,8 +66,7 @@ export const searchModule = {
 
         if (state.limit * state.page <= state.totalCount) {
           commit('setQuery', query);
-          var url = rootState.baseURL + 'GetAudiosPart';
-          const response = await axios.get(url, {
+          const response = await axios.get('GetAudiosPart', {
             params: {
               page: state.page,
               limit: state.limit,

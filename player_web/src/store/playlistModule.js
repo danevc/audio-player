@@ -2,47 +2,77 @@ import axios from "axios";
 
 export const playlistModule = {
     state: () => ({
+        playlistsMetadata: [],
+        totalCount: 0,
         audiosMetadata: [],
+        limit: 10,
         page: 0,
-        limit: 15,
-        totalCount: 0
-    }),
-    getters: {
-        getAudiosMetadata(state) {
-            return state.audiosMetadata;
-        }
-    },
-    mutations: {
-        setAudiosMetadata(state, audiosMetadata) {
-            state.audiosMetadata = audiosMetadata;
+        currentPlaylist: {
+            Id: -1,
+            Title: '',
         },
-        setTotalCount(state, num) {
-            state.totalCount = num;
+    }),
+    mutations: {
+        setPlaylistsMetadata(state, playlistsMetadata) {
+            state.playlistsMetadata = playlistsMetadata;
+        },
+        setTotalCount(state, totalCount) {
+            state.totalCount = totalCount;
+        },
+        setCurrentPlaylist(state, playlist) {
+            state.currentPlaylist = playlist;
         },
         setPage(state, page) {
             state.page = page;
+        },
+        setAudiosMetadata(state, audiosMetadata) {
+            state.audiosMetadata = audiosMetadata;
         }
+
     },
     actions: {
-        async fetchAudios({ state, commit, rootState }) {
+        async fetchPlaylists({ commit }) {
             try {
+                    const response = await axios.get('GetPlaylistsPart');
+                    commit('setPlaylistsMetadata', response.data.Playlists);
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async fetchAudiosByPlaylists({ commit, state }, playlistId) {
+            try {
+                console.log()
+                if(state.currentPlaylist.Id != playlistId){
+                    state.audiosMetadata = [];
+                    state.page = 0;
+                }
                 if(state.limit * state.page <= state.totalCount){
-                    var url = rootState.baseURL + 'GetAudiosPart';
-                    const response = await axios.get(url, {
+                    const response = await axios.get('GetAudiosPart', {
                         params: {
                             page: state.page,
-                            limit: state.limit
+                            limit: state.limit,
+                            playlistId: playlistId
                         }
                     });
                     commit('setTotalCount', response.data.Count);
                     commit('setAudiosMetadata', [...state.audiosMetadata, ...response.data.Audios]);
-                    if(state.page == 0){
-                        commit('player/setQueuePlayback', state.audiosMetadata, { root:true });
-                        commit('player/setAudioMetadata', response.data.Audios[0], {root:true});
-                    }
                     commit('setPage', state.page + 1);
                 }
             } catch (error) {
+                console.log(error);
+            }
+        },
+        async getPlaylist({ commit }, playlistId) {
+            try {
+                    const response = await axios.get('GetPlaylist', {
+                        params: {
+                            id: playlistId
+                        }
+                    });
+                    commit('setTotalCount', response.data.Count);
+                    commit('setCurrentPlaylist', response.data);                      
+                    console.log(response.data);
+                } catch (error) {
                 console.log(error);
             }
         }

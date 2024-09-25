@@ -30,6 +30,15 @@ namespace PlayerApi.Controllers
         [Route("")]
         public IActionResult Action()
         {
+            /**
+            var ids = new List<int>();
+            for (int i = 6179; i < 6238; i++)
+            {
+                ids.Add(i);
+            }
+            Add.Playlist("Well", "__pics\\8c1785c093c67382c1d92916ea2c4419.jpg", ids);
+           */
+
             return Ok();
         }
 
@@ -51,13 +60,13 @@ namespace PlayerApi.Controllers
 
         [HttpGet]
         [Route("GetAudiosPart")]
-        public IActionResult GetAudiosPart(int page = 0, int limit = 10, string query = "")
+        public IActionResult GetAudiosPart(int page = 0, int limit = 10, string query = "", int playlistId = -1)
         {
             using (var db = new AudioPlayerContext())
             {
                 var audios = new List<Audio>();
                 int quantityAudios;
-                if(query == "")
+                if(String.IsNullOrEmpty(query))
                 {
                     audios = db.Audio.OrderByDescending(a => a.CreationDate).Skip(limit * page).Take(limit).Include(a => a.Performer)
                         .ToList();
@@ -73,7 +82,18 @@ namespace PlayerApi.Controllers
                     }
                     quantityAudios = SQLSelector.SearchAudiosCount(query);
                 }
-                
+
+                if (playlistId != -1) {
+                    audios = SQLSelector.AudiosByPlaylist(playlistId, page, limit);
+                    if (!audios.Any())
+                    {
+                        var queryInvert = Utils.EngToRus(query);
+                        audios = SQLSelector.SearchAudios(queryInvert, page, limit);
+                    }
+                    quantityAudios = SQLSelector.AudiosByPlaylistCount(playlistId);
+                }
+
+
                 var audioResponse = new AudioResponse
                 {
                     Count = quantityAudios,
@@ -82,6 +102,29 @@ namespace PlayerApi.Controllers
                 };
                 
                 return Json(audioResponse, _jsonOptions);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetPlaylistsPart")]
+        public IActionResult GetPlaylistsPart(int page = 0, int limit = 5, string query = "")
+        {
+            using (var db = new AudioPlayerContext())
+            {
+                var playlists = new List<Playlist>();
+                if (query == "")
+                {
+                    playlists = db.Playlist.OrderByDescending(p => p.CreationDate).Skip(limit * page).Take(limit)
+                        .ToList();
+                }
+
+                var playlistsResponse = new PlaylistsResponse
+                {
+                    Playlists = playlists,
+                    Error = false
+                };
+
+                return Json(playlistsResponse, _jsonOptions);
             }
         }
 
@@ -110,15 +153,24 @@ namespace PlayerApi.Controllers
                     Error = false
                 };
 
-                var jsonOptions = new System.Text.Json.JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true, 
-                    WriteIndented = true,
-                    IgnoreNullValues = true,
-                    MaxDepth = 10
-                };
+                return Json(audioResponse, _jsonOptions);
+            }
+        }
 
-                return Json(audioResponse, jsonOptions);
+        [HttpGet]
+        [Route("GetPlaylist")]
+        public IActionResult GetPlaylist(int id)
+        {
+            using (var db = new AudioPlayerContext())
+            {
+                var playlist = db.Playlist.FirstOrDefault(e => e.Id == id);
+
+                if(playlist == null)
+                {
+                    return NotFound("Ресурс в приложении не найден");
+                }
+
+                return Json(playlist, _jsonOptions);
             }
         }
 
@@ -161,5 +213,60 @@ namespace PlayerApi.Controllers
                 return Json(hintResponse, _jsonOptions);
             }
         }
+
+        [HttpGet]
+        [Route("GetPlaylistCover")]
+        public IActionResult GetCover(int id)
+        {
+            using (var db = new AudioPlayerContext())
+            {
+                var playlist = db.Playlist.FirstOrDefault(e => e.Id == id);
+                var path = _basePath + playlist.CoverPath;
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                using var br = new BinaryReader(fs);
+                long numBytes = new FileInfo(path).Length;
+                var buff = br.ReadBytes((int)numBytes);
+                var fileResult = File(buff, "image/jpeg");
+                fileResult.EnableRangeProcessing = true;
+                return fileResult;
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAudiosByPlaylist")]
+        public IActionResult GetAudiosByPlaylist(int playlistId, int page = 0, int limit = 10)
+        {
+            using (var db = new AudioPlayerContext())
+            {
+                var audios = new List<Audio>();
+                int quantityAudios = 2;
+                var playlist = db.Playlist.Include(a => a.Audio).ThenInclude(a => a.Performer).FirstOrDefault(e => e.Id == playlistId); 
+
+                playlist.Audio = Utils.AudioListNormalize(playlist.Audio);
+
+                var audioResponse = new AudioResponse
+                {
+                    Count = quantityAudios,
+                    Audios = Utils.AudioListNormalize(audios),
+                    Error = false
+                };
+
+                return Json(audioResponse, _jsonOptions);
+            }
+        }
+
+        [HttpGet]
+        [Route("DeletePlaylist")]
+        public IActionResult DeletePlaylist(int playlistId)
+        {
+            using (var db = new AudioPlayerContext())
+            {
+                var p = db.Playlist.Find(playlistId);
+                db.Playlist.Remove(p);
+                db.SaveChanges();
+                return Json("", _jsonOptions);
+            }
+        }
+
     }
 }

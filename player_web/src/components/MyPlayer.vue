@@ -13,10 +13,10 @@
       </div>
       <div style="display: flex; justify-content: space-between; height: 70px">
         <div class="track_info" v-if="audioMetadata.Id != -1">
-          <my-text class="track_title_info" v-text="audioMetadata.Title"></my-text>
-          <div class="performers" v-for="artist in audioMetadata.Performer" :key="artist.Id">
-            <my-text class="performer" v-text="artist.Name"
-            :performer-id="`${artist.Id}`" @click="performerClickHandler"></my-text>
+          <my-text class="track_title_info">{{ audioMetadata.Title }}</my-text>
+          <div class="performers">
+            <my-text class="performer" v-for="artist in audioMetadata.Performer" :key="artist.Id"
+              :performer-id="`${artist.Id}`" @click="performerClickHandler">{{ artist.Name }}</my-text>
           </div>
         </div>
         <div class="track_info" v-else></div>
@@ -150,23 +150,26 @@ export default {
 </script>
 
 <style scoped>
-.player-controls-container{
-  width:100%; 
-  min-width:700px;
+.player-controls-container {
+  width: 100%;
+  min-width: 700px;
 }
-.cover{
+
+.cover {
   object-fit: contain;
   border-radius: 10px;
   width: 100%;
   height: 100%;
 }
-.cover-container{
+
+.cover-container {
   height: 100px;
   width: 100px;
-  min-width:100px;
+  min-width: 100px;
   border-radius: 15px;
-  margin-right: 20px; 
+  margin-right: 20px;
 }
+
 .icon {
   width: 20px;
   height: 20px;
@@ -260,19 +263,30 @@ export default {
   overflow: hidden;
 }
 
-.performer {
-  margin: 5px;
-  width: 100%;
-  overflow: hidden;
-}
-
 .performer:hover {
   cursor: pointer;
   color: rgb(226, 216, 216);
 }
 
+.performer {
+  display: inline-block;
+}
+
+.performer:not(:last-child):after {
+  content: ', ';
+  margin-right: 6px;
+}
+
+.performers {
+  margin: 5px;
+  margin-top:7px;
+  display: flex;
+  overflow:hidden;
+  white-space: nowrap;
+}
+
 .player-container {
-  display:flex;
+  display: flex;
   width: 100%;
   height: 120px;
   border-radius: 7px;

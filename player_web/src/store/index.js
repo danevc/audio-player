@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { playerModule } from './playerModule'
+import { audiosModule } from './audiosModule'
 import { playlistModule } from './playlistModule'
 import { searchModule } from './searchModule'
 import axios from "axios";
@@ -10,6 +11,19 @@ export default createStore({
     baseURL: 'https://localhost:44325/',
     isLoading: false
   }),
+  getters: {
+    distinct: () => (a) => {
+      var prims = { "boolean": {}, "number": {}, "string": {} }, objs = [];
+
+      return a.filter(function (item) {
+        var type = typeof item;
+        if (type in prims)
+          return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
+        else
+          return objs.indexOf(item) >= 0 ? false : objs.push(item);
+      });
+    }
+  },
   mutations: {
     setIsLoading(state, bool) {
       state.isLoading = bool;
@@ -27,9 +41,9 @@ export default createStore({
           {
             headers: {
               'Content-Type': 'multipart/form-data'
+            }
           }
-        }
-      );
+        );
         console.log(response);
       }
       catch (error) {
@@ -38,8 +52,9 @@ export default createStore({
     }
   },
   modules: {
-    playlist: playlistModule,
+    audios: audiosModule,
     player: playerModule,
-    search: searchModule
+    search: searchModule,
+    playlist: playlistModule
   }
 })

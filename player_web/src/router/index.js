@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SearchResults from '../views/SearchResults.vue'
 import PerformerView from '../views/PerformerView.vue'
+import PlaylistView from '../views/PlaylistView.vue'
 const routes = [
   {
     path: '/',
@@ -18,7 +19,13 @@ const routes = [
     path: '/performer/:performerid',
     component: PerformerView,
     props: true
-  }
+  },
+  {
+    name: 'playlist',
+    path: '/playlist/:id',
+    component: PlaylistView,
+    props: true
+  },
 ]
 
 const router = createRouter({

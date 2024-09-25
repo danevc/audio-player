@@ -31,14 +31,14 @@ namespace PlayerApi.SqlHelper
                     {
                         var perfNew = new Performer { Name = artist };
                         db.Performer.Add(perfNew);
-                        _logger.Trace($"Add | {perfNew.GetType()} with Name: {artist}");
+                        //_logger.Trace($"Add | {perfNew.GetType()} with Name: {artist}");
                         perfNew.Audio.Add(audio);
-                        _logger.Trace($"Add | {audio.GetType()} with Title: {audio.Title}");
+                        //_logger.Trace($"Add | {audio.GetType()} with Title: {audio.Title}");
                     }
                     else
                     {
                         perf.Audio.Add(audio);
-                        _logger.Trace($"Add | {audio.GetType()} with Title: {audio.Title}");
+                        //_logger.Trace($"Add | {audio.GetType()} with Title: {audio.Title}");
                     }
                 }
 
@@ -47,7 +47,7 @@ namespace PlayerApi.SqlHelper
             return "";
         }
 
-        public static string Playlist(string title, List<Audio> audios)
+        public static string Playlist(string title = "", string coverPath = "", List<int> audioIds = null)
         {
             using (var db = new AudioPlayerContext())
             {
@@ -55,16 +55,25 @@ namespace PlayerApi.SqlHelper
                 {
                     title = "Плейлист";
                 }
-
                 var playlist = new Playlist()
                 {
                     Title = title,
                     CreationDate = DateTime.Now,
-                    Audio = audios
+                    CoverPath = coverPath
                 };
+               
                 db.Playlist.Add(playlist);
-                _logger.Trace($"Add | {playlist.GetType()} with Title: {playlist.Title}");
+                if (audioIds != null && audioIds.Any())
+                {
+                    foreach (var id in audioIds)
+                    {
+                        var audio = db.Audio.FirstOrDefault(a => a.Id == id);
+                        playlist.Audio.Add(audio);
+                    }
+                }
+
                 db.SaveChanges();
+                _logger.Trace($"Add | {playlist.GetType()} with Title: {playlist.Title}");
                 return "";
             }
         }

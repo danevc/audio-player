@@ -12,5 +12,6 @@ namespace PlayerApi.Models
         public DateTime CreationDate { get; set; }
         public int AmountAudios { get; set; }
         public List<Audio> Audio { get; set; } = new List<Audio>();
+        public string CoverPath { get; set; }
     }
 }

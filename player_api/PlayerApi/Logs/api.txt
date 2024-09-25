@@ -1,1 +1,12 @@
-pluginContext.Logger.Trace("Plugin1 AddCorporateClientToNetwork execution started");
+pluginContext.Logger.Trace("Plugin1 AddCorporateClientToNetwork execution started");[#| 2024-09-15 23-25-43.593 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: мой первый плейлист |#]
+[#| 2024-09-15 23-32-03.508 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: мой первый плейлист |#]
+[#| 2024-09-16 00-49-02.459 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Новинки |#]
+[#| 2024-09-16 00-53-02.511 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Новинки |#]
+[#| 2024-09-16 00-57-47.612 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Новинки |#]
+[#| 2024-09-16 01-00-36.661 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Новинки |#]
+[#| 2024-09-16 09-46-46.310 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Новинки |#]
+[#| 2024-09-17 22-04-28.178 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Новинки |#]
+[#| 2024-09-25 15-34-03.944 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Calm |#]
+[#| 2024-09-25 15-35-04.500 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Calm |#]
+[#| 2024-09-25 20-37-23.900 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Well |#]
+[#| 2024-09-25 20-42-47.781 | TRACE | PlayerApi.SqlHelper.Add | Add | PlayerApi.Models.Playlist with Title: Well |#]

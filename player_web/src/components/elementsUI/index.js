@@ -9,6 +9,7 @@ import SearchBar from "./SearchBar"
 import DialogWindow from "./DialogWindow"
 import UploadFileForm from "./UploadFileForm"
 import MySearch from "./MySearch"
+import PlaylistTile from "./PlaylistTile"
 
 export default [
   MyButton,
@@ -21,5 +22,6 @@ export default [
   SearchBar,
   DialogWindow,
   UploadFileForm,
-  MySearch
+  MySearch,
+  PlaylistTile
 ]
