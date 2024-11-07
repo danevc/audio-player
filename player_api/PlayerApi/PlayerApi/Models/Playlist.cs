@@ -9,8 +9,8 @@ namespace PlayerApi.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
         public DateTime CreationDate { get; set; }
-        public int AmountAudios { get; set; }
         public List<Audio> Audio { get; set; } = new List<Audio>();
         public string CoverPath { get; set; }
     }

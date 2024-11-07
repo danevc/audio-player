@@ -1,5 +1,4 @@
-﻿using NLog;
-using PlayerApi.Models;
+﻿using PlayerApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,6 @@ namespace PlayerApi.SqlHelper
 {
     public static class Add
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public static string Audio(string path)
         {
@@ -73,7 +71,7 @@ namespace PlayerApi.SqlHelper
                 }
 
                 db.SaveChanges();
-                _logger.Trace($"Add | {playlist.GetType()} with Title: {playlist.Title}");
+                //_logger.Trace($"Add | {playlist.GetType()} with Title: {playlist.Title}");
                 return "";
             }
         }

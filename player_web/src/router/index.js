@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import SearchResults from '../views/SearchResults.vue'
+import SearchResultsView from '../views/SearchResultsView.vue'
 import PerformerView from '../views/PerformerView.vue'
 import PlaylistView from '../views/PlaylistView.vue'
+import AddPlaylistView from '../views/AddPlaylistView.vue'
 const routes = [
   {
     path: '/',
@@ -11,7 +12,7 @@ const routes = [
   {
     name: 'search',
     path: '/search/:query',
-    component: SearchResults,
+    component: SearchResultsView,
     props: true
   },
   {
@@ -25,6 +26,12 @@ const routes = [
     path: '/playlist/:id',
     component: PlaylistView,
     props: true
+  },
+  {
+    name: 'add-playlist',
+    path: '/add-playlist',
+    component: AddPlaylistView,
+    props: false
   },
 ]
 

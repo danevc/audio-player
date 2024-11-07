@@ -1,6 +1,6 @@
 <template>
   <div class="home_page">
-    <playlists-section :playlists="playlistsMetadata" :title="'Мои плейлисты'" class="playlists-section">111</playlists-section>
+    <playlists-section :playlists="playlistsMetadata" :title="'Мои плейлисты'" class="playlists-section"></playlists-section>
     <audio-list :audiosMetadata="audiosMetadata" class="audio-list"></audio-list>
   </div>
   <div ref="observer" class="observer"></div>
@@ -33,7 +33,6 @@ export default {
     })
   },
   mounted() {
-    //this.$store.commit('setIsLoading', true);
     this.fetchPlaylists();
     const options = {
       rootMagrgin: '0px',
@@ -46,16 +45,11 @@ export default {
     }
     const observer = new IntersectionObserver(callback, options);
     observer.observe(this.$refs.observer);
-    //setTimeout(() => this.$store.commit('setIsLoading', false), 1200);
   }
 }
 </script>
 
 <style>
-.observer {
-  display: flex;
-  justify-content: center;
-}
 .audio-list{
     width: 60%;
     height: 100%;

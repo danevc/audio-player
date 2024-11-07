@@ -73,19 +73,18 @@ export const playerModule = {
             });
             state.audioHTML.preload = true;
         },
-        async getAudio({ commit, rootState }, id) {
-            var url = rootState.baseURL + 'GetAudio';
-            const response = await axios.get(url, {
+        async getAudio({ commit }, id) {
+            const response = await axios.get('Audio/GetAudioById', {
                 params: {
                     id: id
                 }
             });
-            commit('setAudioMetadata', response.data.Audio);
+            commit('setAudioMetadata', response.data);
         },
         playAudio({ state, commit, rootState, dispatch }, id) {
             try {
                 dispatch('getAudio', id);
-                state.audioHTML.src = rootState.baseURL + 'GetAudioFile?id=' + id;
+                state.audioHTML.src = rootState.baseURL + 'Audio/GetAudioFile?id=' + id;
                 state.audioHTML.currentTime = state.currentTime;
                 var playPromise = state.audioHTML.play();
                 if (playPromise !== undefined) {

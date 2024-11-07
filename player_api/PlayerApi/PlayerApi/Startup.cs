@@ -31,6 +31,7 @@ namespace PlayerApi
             }
 
             app.UseDefaultFiles();
+
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();

@@ -30,14 +30,13 @@ export default createStore({
     }
   },
   actions: {
-    async uploadFiles({ rootState }, files) {
+    async uploadFiles({  }, files) {
       try {
         var formData = new FormData();
         for (let i = 0; i < files.length; i++) {
           formData.append('files', files[i]);
         }
-        var url = rootState.baseURL + 'AddAudios';
-        const response = await axios.post(url, formData,
+        const response = await axios.post('Audio/AddAudios', formData,
           {
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -48,6 +47,25 @@ export default createStore({
       }
       catch (error) {
         console.log(error);
+      }
+    },
+    async uploadFile({  }, file) {
+      try {
+        var formData = new FormData();
+        formData.append('files', file);
+        const response = await axios.post('Audio/AddAudios', formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        console.log('in action: ' + response.status);
+        return response.status;
+      }
+      catch (error) {
+        console.log('err');
+        return error;
       }
     }
   },

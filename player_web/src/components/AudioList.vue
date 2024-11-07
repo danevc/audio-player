@@ -1,6 +1,11 @@
 <template>
-    <div class="play-list" @click="playlistClickHandler">
-        <audio-elem v-for="a in audiosMetadata" :key=a.Id :audio="a"></audio-elem>
+    <div class="play-list">
+        <div v-if="audiosMetadata.length > 0">
+            <audio-elem @click="playlistClickHandler" v-for="a in audiosMetadata" :key=a.Id :audio="a"></audio-elem>
+        </div>
+        <div v-else>
+            <my-text>Пустой список</my-text>
+        </div>
     </div>
 </template>
 
@@ -23,8 +28,6 @@ export default {
                 setQueuePlayback: 'player/setQueuePlayback',
             }),
         playlistClickHandler(){
-            
-            console.log('setQueuePlayback');
             this.setQueuePlayback(this.audiosMetadata);
         }
     }

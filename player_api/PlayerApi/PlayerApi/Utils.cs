@@ -1,10 +1,21 @@
 ﻿using PlayerApi.Models;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace PlayerApi
 {
     public static class Utils
     {
+        public static readonly string _basePath = "D:\\Danil\\Music\\";
+
+        public static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true,
+            IgnoreNullValues = true,
+            MaxDepth = 10
+        };
+
         private static readonly string RusKey = "Ё!\"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,ё1234567890-=йцукенгшщзхъ\\фывапролджэячсмитьбю. ";
         private static readonly string EngKey = "~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./ ";
 
@@ -60,9 +71,9 @@ namespace PlayerApi
             }
         }*/
 
-        public static List<Audio> AudioListNormalize(List<Audio> audios)
+        public static List<Audio> AudiosNormalize(List<Audio> audios)
         {
-            var audiosRes = new List<Audio>();
+            var res = new List<Audio>();
             List<Performer> performers;
             foreach (var a in audios)
             {
@@ -76,7 +87,7 @@ namespace PlayerApi
                         Audio = null
                     });
                 }
-                audiosRes.Add(new Audio
+                res.Add(new Audio
                 {
                     Id = a.Id,
                     Title = a.Title,
@@ -85,7 +96,7 @@ namespace PlayerApi
                     Performer = performers
                 });
             }
-            return audiosRes;
+            return res;
         }
 
         public static string EngToRus(string text)

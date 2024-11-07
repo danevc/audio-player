@@ -8,8 +8,8 @@
         <div class="timelineNow" :style="{ width: lostPartTrack + '%' }"></div>
       </div>
       <div class="duration_info">
-        <my-text class="cur_duration_info" v-text="secToMin(Math.floor(this.currentTime))"></my-text>
-        <my-text class="full_duration_info" v-text="secToMin(audioMetadata.Duration)"></my-text>
+        <my-text class="cur_duration_info">{{ secToMin(Math.floor(this.currentTime)) }}</my-text>
+        <my-text class="full_duration_info">{{ secToMin(audioMetadata.Duration) }}</my-text>
       </div>
       <div style="display: flex; justify-content: space-between; height: 70px">
         <div class="track_info" v-if="audioMetadata.Id != -1">

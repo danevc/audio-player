@@ -1,5 +1,4 @@
 <template>
-
     <div class="upload-audio-container">
         <my-text>Выберите файлы формата mp3</my-text>
         <div v-if="files.length == 0">
@@ -8,7 +7,7 @@
             </my-button>
         </div>
         <div v-else>
-            <my-button @click="sendFiles" class="send-audio-btn" >
+            <my-button @click="sendFiles" class="send-audio-btn">
                 <my-text>Отправить</my-text>
             </my-button>
         </div>
@@ -31,10 +30,11 @@ export default {
             files: []
         }
     },
-    ...mapActions({
-        uploadFiles: 'uploadFiles',
-    }),
     methods: {
+        ...mapActions([
+            'uploadFiles',
+            'uploadFile',
+        ]),
         previewFiles(event) {
             this.files = [...event.target.files];
             for (let i = 0; i < this.files.length; i++) {
@@ -51,14 +51,14 @@ export default {
                     i--;
                 }
             }
-
-            this.files.forEach((f, ndx) => {
-
-
-            });
         },
-        sendFiles() {
-            this.$store.dispatch('uploadFiles', this.files);
+        async sendFiles() {
+            for (var file of this.files) {
+                var res = await this.uploadFile(file);
+                if (res = 200) {
+                    this.files = this.files.filter(a => a.id !== file.id);
+                }
+            };
         },
         deleteAudio(f) {
             this.files = this.files.filter(a => a.id !== f.id);

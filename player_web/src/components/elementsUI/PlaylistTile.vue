@@ -16,21 +16,19 @@ export default {
     },
     methods: {
         clickPlaylistTileHandler() {
-            this.$store.commit('playlist/setCurrentPlaylist', this.playlist);
-            console.log(this.playlist)
             this.$router.push({ name: 'playlist', params: { id: this.playlist.Id } });
         }
     },
     computed: {
         getSrc() {
             var baseUrl = this.$store.state.baseURL;
-            return `${baseUrl}GetPlaylistCover?id=${this.playlist.Id}`
+            return `${baseUrl}Playlist/GetPlaylistCover?id=${this.playlist.Id}`
         }
     },
 }
 </script>
 
-<style>
+<style scoped>
 .cover-playlist {
     border-radius: 5px;
     width: 140px;

@@ -27,13 +27,13 @@ export const audiosModule = {
         async fetchAudios({ state, commit, rootGetters }) {
             try {
                 if(state.limit * state.page <= state.totalCount){
-                    const response = await axios.get('GetAudiosPart', {
+                    const response = await axios.get('Audio/GetAudios', {
                         params: {
                             page: state.page,
                             limit: state.limit
                         }
                     });
-                    commit('setTotalCount', response.data.Count);
+                    commit('setTotalCount', response.data.QuantityAudios);
                     commit('setAudiosMetadata', [...state.audiosMetadata, ...response.data.Audios]);
                     if(state.page == 0){
                         commit('player/setQueuePlayback', state.audiosMetadata, { root:true });

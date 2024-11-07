@@ -1,5 +1,6 @@
 import MyButton from "./MyButton"
 import MyInput from "./MyInput"
+import MyInputMultiline from "./MyInputMultiline"
 import AudioElem from "./AudioElem"
 import MyText from "./MyText"
 import ScreenLoader from "./ScreenLoader"
@@ -14,6 +15,7 @@ import PlaylistTile from "./PlaylistTile"
 export default [
   MyButton,
   MyInput,
+  MyInputMultiline,
   AudioElem,
   MyText,
   ScreenLoader,

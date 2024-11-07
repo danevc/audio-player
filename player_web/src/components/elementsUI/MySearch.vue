@@ -6,6 +6,7 @@
 <script>
 export default {
     name: 'my-search',
+    emits: ["searchQuery"],
     data() {
         return {
             searchValue: '',
@@ -17,7 +18,7 @@ export default {
         search(query) {
             this.isVisibleSearchBar = false;
             this.searchValue = query;
-            this.$router.push({ name: 'search', params: { query: query } });
+            this.$emit('searchQuery', query)
         },
         enterHandler() {
             this.search(this.searchValue);
