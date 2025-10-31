@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using PlayerApi.Responses;
-using System.IO;
-using System;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using PlayerApi.Models;
+using PlayerApi.Responses;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace PlayerApi.Controllers
 {
@@ -125,7 +124,7 @@ namespace PlayerApi.Controllers
                 {
                     var p = db.Playlist.Find(id);
 
-                    if(p == null)
+                    if (p == null)
                     {
                         return NotFound("Плейлист не найден");
                     }
@@ -188,7 +187,7 @@ namespace PlayerApi.Controllers
                 {
                     var playlist = db.Playlist.Find(request.id);
 
-                    if(playlist == null)
+                    if (playlist == null)
                     {
                         return NotFound();
                     }

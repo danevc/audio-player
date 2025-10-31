@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PlayerApi.Responses;
-using System.Collections.Generic;
 using PlayerApi.Models;
-using System.IO;
+using PlayerApi.Responses;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using NLog;
-using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using PlayerApi.SqlHelper;
 
 namespace PlayerApi.Controllers
 {
@@ -136,5 +133,5 @@ namespace PlayerApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-    }        
+    }
 }

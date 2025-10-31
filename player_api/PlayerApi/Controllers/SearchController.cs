@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PlayerApi.Responses;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PlayerApi.Controllers
 {
