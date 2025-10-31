@@ -1,1 +1,0 @@
-pluginContext.Logger.Trace("Plugin1 AddCorporateClientToNetwork execution started");

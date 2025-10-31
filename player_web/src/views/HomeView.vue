@@ -1,30 +1,39 @@
 <template>
   <div class="home_page">
-    <play-list :audiosMetadata="audiosMetadata"></play-list>
+    <playlists-section :playlists="playlistsMetadata" :title="'Мои плейлисты'" class="playlists-section"></playlists-section>
+    <audio-list :audiosMetadata="audiosMetadata" class="audio-list"></audio-list>
   </div>
   <div ref="observer" class="observer"></div>
 </template>
 
 <script>
-import PlayList from '@/components/PlayList';
+import AudioList from '@/components/AudioList';
+import PlaylistsSection from '@/components/PlaylistsSection';
 import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
-    PlayList
+    AudioList,
+    PlaylistsSection
+  },
+  data() {
+    return {
+    }
   },
   computed: {
     ...mapState({
-      audiosMetadata: state => state.playlist.audiosMetadata
+      audiosMetadata: state => state.audios.audiosMetadata,
+      playlistsMetadata: state => state.playlist.playlistsMetadata
     })
   },
   methods: {
     ...mapActions({
-      fetchAudios: 'playlist/fetchAudios'
+      fetchAudios: 'audios/fetchAudios',
+      fetchPlaylists: 'playlist/fetchPlaylists'
     })
   },
   mounted() {
-    //this.$store.commit('setIsLoading', true);
+    this.fetchPlaylists();
     const options = {
       rootMagrgin: '0px',
       threshold: 1.0
@@ -36,14 +45,20 @@ export default {
     }
     const observer = new IntersectionObserver(callback, options);
     observer.observe(this.$refs.observer);
-    //setTimeout(() => this.$store.commit('setIsLoading', false), 1200);
   }
 }
 </script>
 
 <style>
-.observer {
-  display: flex;
-  justify-content: center;
+.audio-list{
+    width: 60%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.playlists-section{
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
 }
 </style>

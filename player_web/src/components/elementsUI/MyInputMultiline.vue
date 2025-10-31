@@ -1,10 +1,10 @@
 <template>
-    <input :value="modelValue" @input="updateInput" class="input" type="text" :placeholder="placeholder">
+    <textarea :value="modelValue" @input="updateInput" rows="3" cols="60" class="textarea" :placeholder="placeholder"></textarea>
 </template>
 
 <script>
 export default {
-    name: 'my-input',
+    name: 'my-input-multiline',
     props: {
         modelValue: [String, Number],
         placeholder: {
@@ -21,21 +21,20 @@ export default {
 </script>
 
 <style scoped>
-.input {
-    width: 100%;
-    height: 33px;
-    border: 1px solid rgb(39, 37, 45);
+.textarea {
+    border: 2px solid rgb(39, 37, 45);
     background-color: rgb(39, 37, 45);
-    padding-left:10px;
-    border-radius: 5px;
-    color:white;
+    padding:10px;
+    border-radius: 10px;
     font-family: 'Trebuchet MS';
-    font-size: 1.1em;
+    font-size: 0.9em;
+    color:rgb(219, 221, 224);
 }
-.input:focus {
+.textarea:focus {
     background-color: rgb(51, 48, 59);
+    color:white;
 }
-.input:active, :hover, :focus {
+.textarea:active, :hover, :focus {
     outline: 0;
     outline-offset: 0;
 }

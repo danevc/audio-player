@@ -54,6 +54,7 @@ export default {
 }
 
 .search-bar {
+    position: absolute;
     padding: 7px;
     text-align: left;
     width: 100%;

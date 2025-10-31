@@ -46,7 +46,8 @@ export default {
   background-color: rgb(39, 37, 45);
 }
 ::-webkit-scrollbar {
-  width:11px;
+  width:10px;
+  height: 10px;
   background-color: rgb(64, 60, 75);
 }
 

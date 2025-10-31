@@ -1,5 +1,6 @@
 import MyButton from "./MyButton"
 import MyInput from "./MyInput"
+import MyInputMultiline from "./MyInputMultiline"
 import AudioElem from "./AudioElem"
 import MyText from "./MyText"
 import ScreenLoader from "./ScreenLoader"
@@ -9,10 +10,12 @@ import SearchBar from "./SearchBar"
 import DialogWindow from "./DialogWindow"
 import UploadFileForm from "./UploadFileForm"
 import MySearch from "./MySearch"
+import PlaylistTile from "./PlaylistTile"
 
 export default [
   MyButton,
   MyInput,
+  MyInputMultiline,
   AudioElem,
   MyText,
   ScreenLoader,
@@ -21,5 +24,6 @@ export default [
   SearchBar,
   DialogWindow,
   UploadFileForm,
-  MySearch
+  MySearch,
+  PlaylistTile
 ]

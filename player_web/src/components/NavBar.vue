@@ -1,10 +1,10 @@
 <template>
   <div class="navbar">
     <div @click="$router.push('/')">
-      <my-text class="title-header">daire</my-text>
+      <div class="title-header"></div>
     </div>
     <div class="search">
-      <my-search></my-search>
+      <my-search @searchQuery="search"></my-search>
     </div>
     <div class="upload-audio-container">
       <my-button @click="uploadFileHandler" style="padding: 5px;">
@@ -19,7 +19,8 @@
   </div>
 </template>
 
-<script>
+<script scoped>
+
 export default {
   data() {
     return {
@@ -29,20 +30,27 @@ export default {
   methods: {
     uploadFileHandler() {
       this.isShowUploadFile = true;
+    },
+    search(query){
+      this.$router.push({ name: 'search', params: { query: query } });
     }
   }
   
 }
 </script>
 
-<style>
+<style scoped>
 .upload-audio-container {
   margin-left: auto;
 }
 
 .title-header {
-  font-size: 1.3em;
-  margin: 20px;
+  width: 70px;
+  height: 35px;
+  background-image: url('@/icones/logo1.png');
+  background-size:cover;
+  margin: 10px;
+  cursor: pointer;
 }
 
 .navbar {
